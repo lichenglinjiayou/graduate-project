@@ -16,5 +16,7 @@ import java.util.Map;
 public interface WmsWareInfoService extends IService<WmsWareInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    PageUtils queryPageByCondition(Map<String, Object> params);
 }
 

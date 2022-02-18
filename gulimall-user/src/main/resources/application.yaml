@@ -1,0 +1,24 @@
+
+spring:
+#  datasource:
+#    username: root
+#    password: lcl19960822
+#    url: jdbc:mysql://192.168.127.135:3308/gulimall_ums
+#    driver-class-name: com.mysql.jdbc.Driver
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: 127.0.0.1:8848
+  application:
+    name: gulimall-user
+
+#mybatis-plus:
+#  mapper-locations: classpath:/mapper/user/*.xml
+#  #  主键自增
+#  global-config:
+#    db-config:
+#      id-type: auto
+
+
+#server:
+#  port: 11000

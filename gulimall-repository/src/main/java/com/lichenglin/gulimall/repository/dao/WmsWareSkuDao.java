@@ -3,6 +3,7 @@ package com.lichenglin.gulimall.repository.dao;
 import com.lichenglin.gulimall.repository.entity.WmsWareSkuEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 商品库存
@@ -13,5 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface WmsWareSkuDao extends BaseMapper<WmsWareSkuEntity> {
-	
+
+    void saveSkuInfo(@Param("wmsWareSkuEntity") WmsWareSkuEntity wmsWareSkuEntity);
 }

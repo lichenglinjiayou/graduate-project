@@ -25,7 +25,7 @@ import com.lichenglin.common.utils.R;
  * @date 2022-02-09 21:37:34
  */
 @RestController
-@RequestMapping("repository/wmspurchasedetail")
+@RequestMapping("ware/purchasedetail")
 public class WmsPurchaseDetailController {
     @Autowired
     private WmsPurchaseDetailService wmsPurchaseDetailService;
@@ -35,7 +35,7 @@ public class WmsPurchaseDetailController {
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = wmsPurchaseDetailService.queryPage(params);
+        PageUtils page = wmsPurchaseDetailService.queryPageByCondition(params);
 
         return R.ok().put("page", page);
     }

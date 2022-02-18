@@ -3,12 +3,9 @@ package com.lichenglin.gulimall.coupon.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.lichenglin.common.to.SkuReductionTo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.coupon.entity.SmsSkuFullReductionEntity;
 import com.lichenglin.gulimall.coupon.service.SmsSkuFullReductionService;
@@ -78,6 +75,13 @@ public class SmsSkuFullReductionController {
     public R delete(@RequestBody Long[] ids){
 		smsSkuFullReductionService.removeByIds(Arrays.asList(ids));
 
+        return R.ok();
+    }
+
+
+    @PostMapping("/saveInfo")
+    public R saveInfo(@RequestBody SkuReductionTo skuReductionTo){
+        smsSkuFullReductionService.saveSkuReduction(skuReductionTo);
         return R.ok();
     }
 

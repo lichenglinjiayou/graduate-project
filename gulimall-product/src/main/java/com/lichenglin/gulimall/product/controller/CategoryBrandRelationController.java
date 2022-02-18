@@ -1,14 +1,19 @@
 package com.lichenglin.gulimall.product.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.lichenglin.gulimall.product.entity.BrandEntity;
+import com.lichenglin.gulimall.product.entity.CategoryEntity;
+import com.lichenglin.gulimall.product.service.BrandService;
+import com.lichenglin.gulimall.product.service.CategoryService;
+import com.lichenglin.gulimall.product.vo.BrandVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.product.entity.CategoryBrandRelationEntity;
 import com.lichenglin.gulimall.product.service.CategoryBrandRelationService;
@@ -30,6 +35,12 @@ public class CategoryBrandRelationController {
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private BrandService brandService;
+
     /**
      * 列表
      */
@@ -39,6 +50,35 @@ public class CategoryBrandRelationController {
 
         return R.ok().put("page", page);
     }
+
+    /*
+        2 获取当前品牌关联的所有分类的功能
+     */
+    @GetMapping("/catelog/list")
+    public R list(@RequestParam Map<String, Object> params,@RequestParam("brandId") Long brandId){
+        List<CategoryBrandRelationEntity> list =
+            categoryBrandRelationService.list(
+                new QueryWrapper<CategoryBrandRelationEntity>().eq("brand_id",brandId));
+        return R.ok().put("category", list);
+    }
+
+    /*
+        3. Controller 处理请求、接收和校验数据；Service 接收Controller传来的数据，进行业务处理； Controller接收Service的处理结果，封装指定Vo,返回结果；
+     */
+    @GetMapping("/brands/list")
+    public R relationBrandsList(@RequestParam("catId") Long catId){
+        System.out.println(catId);
+        List<BrandEntity> brandEntities = categoryBrandRelationService.getBrandByCategoryId(catId);
+        List<BrandVo> list = new ArrayList<>();
+        brandEntities.forEach((item)->{
+            BrandVo brandVo = new BrandVo();
+            brandVo.setBrandId(item.getBrandId());
+            brandVo.setBrandName(item.getName());
+            list.add(brandVo);
+        });
+        return R.ok().put("data",list);
+    }
+
 
 
     /**
@@ -56,8 +96,12 @@ public class CategoryBrandRelationController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody CategoryBrandRelationEntity categoryBrandRelation){
-		categoryBrandRelationService.save(categoryBrandRelation);
-
+//		categoryBrandRelationService.save(categoryBrandRelation);
+        CategoryEntity categoryEntity = categoryService.getById(categoryBrandRelation.getCatelogId());
+        BrandEntity brandEntity = brandService.getById(categoryBrandRelation.getBrandId());
+        categoryBrandRelation.setBrandName(brandEntity.getName());
+        categoryBrandRelation.setCatelogName(categoryEntity.getName());
+        categoryBrandRelationService.save(categoryBrandRelation);
         return R.ok();
     }
 

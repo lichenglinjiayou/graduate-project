@@ -2,6 +2,7 @@ package com.lichenglin.gulimall.product.dao;
 
 import com.lichenglin.gulimall.product.entity.AttrEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lichenglin.gulimall.product.vo.AttrVo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,5 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AttrDao extends BaseMapper<AttrEntity> {
-	
+
+
 }

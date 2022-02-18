@@ -1,9 +1,12 @@
 package com.lichenglin.gulimall.coupon.controller;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +29,30 @@ import com.lichenglin.common.utils.R;
  */
 @RestController
 @RequestMapping("coupon/smscoupon")
+@RefreshScope
 public class SmsCouponController {
     @Autowired
     private SmsCouponService smsCouponService;
 
+    @Value("${person.name}")
+    private String name;
+
+    @Value("${person.age}")
+    private Integer age;
+
+    @RequestMapping("/info")
+    public R getInfo(){
+        return R.ok().put("name",name).put("age",age);
+    }
+
+    @RequestMapping("/userCoupon")
+    public R userCoupon(){
+        SmsCouponEntity smsCouponEntity = new SmsCouponEntity();
+        smsCouponEntity.setCouponName("满100减20");
+        smsCouponEntity.setAmount(new BigDecimal(20));
+        smsCouponEntity.setCode("lcl19960822");
+        return R.ok().put("coupons",smsCouponEntity);
+    }
     /**
      * 列表
      */

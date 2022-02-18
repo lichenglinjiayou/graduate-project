@@ -25,7 +25,7 @@ import com.lichenglin.common.utils.R;
  * @date 2022-02-09 21:37:34
  */
 @RestController
-@RequestMapping("repository/wmswaresku")
+@RequestMapping("ware/waresku")
 public class WmsWareSkuController {
     @Autowired
     private WmsWareSkuService wmsWareSkuService;
@@ -35,7 +35,7 @@ public class WmsWareSkuController {
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = wmsWareSkuService.queryPage(params);
+        PageUtils page = wmsWareSkuService.queryPageByCondition(params);
 
         return R.ok().put("page", page);
     }

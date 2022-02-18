@@ -1,6 +1,9 @@
 package com.lichenglin.gulimall.product.service.impl;
 
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -24,6 +27,21 @@ public class SpuImagesServiceImpl extends ServiceImpl<SpuImagesDao, SpuImagesEnt
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public void saveImages(Long spuId, List<String> images) {
+        if(images.size() > 0){
+            List<SpuImagesEntity> spuImagesEntities = new ArrayList<>();
+            images.forEach((item)->{
+                SpuImagesEntity spuImagesEntity = new SpuImagesEntity();
+                spuImagesEntity.setSpuId(spuId);
+                spuImagesEntity.setImgUrl(item);
+                spuImagesEntities.add(spuImagesEntity);
+            });
+            this.saveBatch(spuImagesEntities);
+        }
+
     }
 
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lichenglin.common.utils.PageUtils;
 import com.lichenglin.gulimall.product.entity.CategoryEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +17,13 @@ import java.util.Map;
 public interface CategoryService extends IService<CategoryEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    List<CategoryEntity> listByTree();
+
+    void removeMenuByIds(List<Long> asList);
+
+    Long[] findCatelogIds(Long catelogId);
+
+    void updateCascade(CategoryEntity category);
 }
 

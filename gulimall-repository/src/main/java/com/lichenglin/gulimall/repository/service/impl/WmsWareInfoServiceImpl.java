@@ -1,5 +1,6 @@
 package com.lichenglin.gulimall.repository.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -23,6 +24,21 @@ public class WmsWareInfoServiceImpl extends ServiceImpl<WmsWareInfoDao, WmsWareI
                 new QueryWrapper<WmsWareInfoEntity>()
         );
 
+        return new PageUtils(page);
+    }
+
+    @Override
+    public PageUtils queryPageByCondition(Map<String, Object> params) {
+        QueryWrapper<WmsWareInfoEntity> wrapper = new QueryWrapper<>();
+        String key = (String) params.get("key");
+        if(!StringUtils.isEmpty(key)){
+            wrapper.eq("id",key).or().eq("areacode",key).or()
+                    .like("name",key).or().like("address",key);
+        }
+        IPage<WmsWareInfoEntity> page = this.page(
+                new Query<WmsWareInfoEntity>().getPage(params),
+                wrapper
+        );
         return new PageUtils(page);
     }
 

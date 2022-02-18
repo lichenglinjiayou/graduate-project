@@ -16,5 +16,9 @@ import java.util.Map;
 public interface WmsWareSkuService extends IService<WmsWareSkuEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    PageUtils queryPageByCondition(Map<String, Object> params);
+
+    void saveSkuInfo(WmsWareSkuEntity wmsWareSkuEntity);
 }
 

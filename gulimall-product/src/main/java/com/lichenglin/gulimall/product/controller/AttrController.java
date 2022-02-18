@@ -1,14 +1,15 @@
 package com.lichenglin.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.lichenglin.gulimall.product.entity.ProductAttrValueEntity;
+import com.lichenglin.gulimall.product.service.ProductAttrValueService;
+import com.lichenglin.gulimall.product.vo.AttrResponseWithPath;
+import com.lichenglin.gulimall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.product.entity.AttrEntity;
 import com.lichenglin.gulimall.product.service.AttrService;
@@ -29,6 +30,8 @@ import com.lichenglin.common.utils.R;
 public class AttrController {
     @Autowired
     private AttrService attrService;
+    @Autowired
+    private ProductAttrValueService productAttrValueService;
 
     /**
      * 列表
@@ -40,14 +43,23 @@ public class AttrController {
         return R.ok().put("page", page);
     }
 
+    @GetMapping("/{AttrType}/list/{catelogId}")
+    public R baseList(@RequestParam Map<String, Object> params,@PathVariable("catelogId") Long catelogId,
+                      @PathVariable("AttrType") String type){
+//        PageUtils page = attrService.queryPage(params);
+        PageUtils page = attrService.queryWithKey(params,catelogId,type);
+
+        return R.ok().put("page", page);
+    }
+
 
     /**
      * 信息
      */
     @RequestMapping("/info/{attrId}")
     public R info(@PathVariable("attrId") Long attrId){
-		AttrEntity attr = attrService.getById(attrId);
-
+//		AttrEntity attr = attrService.getById(attrId);
+        AttrResponseWithPath attr = attrService.getAllPathById(attrId);
         return R.ok().put("attr", attr);
     }
 
@@ -55,9 +67,9 @@ public class AttrController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody AttrEntity attr){
-		attrService.save(attr);
-
+    public R save(@RequestBody AttrVo attr){
+//		attrService.save(attr);
+        attrService.saveAttr(attr);
         return R.ok();
     }
 
@@ -65,9 +77,15 @@ public class AttrController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody AttrEntity attr){
-		attrService.updateById(attr);
+    public R update(@RequestBody AttrVo attr){
+//		attrService.updateById(attr);
+        attrService.updateAttrVo(attr);
+        return R.ok();
+    }
 
+    @PostMapping("/update/{spuId}")
+    public R updateBatchAttr(@RequestBody List<ProductAttrValueEntity> entities,@PathVariable("spuId") Long spuId){
+        attrService.updateAttr(spuId,entities);
         return R.ok();
     }
 
@@ -79,6 +97,13 @@ public class AttrController {
 		attrService.removeByIds(Arrays.asList(attrIds));
 
         return R.ok();
+    }
+
+    @GetMapping("/base/listforspu/{spuId}")
+    public R baseAttrList(@PathVariable("spuId") Long spuId){
+
+        List<ProductAttrValueEntity> productAttrValueEntity = productAttrValueService.baseAttrListForSpu(spuId);
+        return R.ok().put("data",productAttrValueEntity);
     }
 
 }

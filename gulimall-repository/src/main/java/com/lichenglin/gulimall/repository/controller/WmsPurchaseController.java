@@ -1,14 +1,14 @@
 package com.lichenglin.gulimall.repository.controller;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
+import com.lichenglin.gulimall.repository.vo.MergeVo;
+import com.lichenglin.gulimall.repository.vo.PurchaseFinishVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.repository.entity.WmsPurchaseEntity;
 import com.lichenglin.gulimall.repository.service.WmsPurchaseService;
@@ -25,7 +25,7 @@ import com.lichenglin.common.utils.R;
  * @date 2022-02-09 21:37:34
  */
 @RestController
-@RequestMapping("repository/wmspurchase")
+@RequestMapping("ware/purchase")
 public class WmsPurchaseController {
     @Autowired
     private WmsPurchaseService wmsPurchaseService;
@@ -40,6 +40,11 @@ public class WmsPurchaseController {
         return R.ok().put("page", page);
     }
 
+    @GetMapping("/unreceive/list")
+    public R unreceiveList(@RequestParam Map<String, Object> params){
+        PageUtils page = wmsPurchaseService.queryPurchaseByStatus(params);
+        return R.ok().put("page",page);
+    }
 
     /**
      * 信息
@@ -56,6 +61,8 @@ public class WmsPurchaseController {
      */
     @RequestMapping("/save")
     public R save(@RequestBody WmsPurchaseEntity wmsPurchase){
+        wmsPurchase.setUpdateTime(new Date());
+        wmsPurchase.setCreateTime(new Date());
 		wmsPurchaseService.save(wmsPurchase);
 
         return R.ok();
@@ -81,4 +88,22 @@ public class WmsPurchaseController {
         return R.ok();
     }
 
+    @PostMapping("/merge")
+    public R merger(@RequestBody MergeVo mergeVo){
+        wmsPurchaseService.mergePurchase(mergeVo);
+        return R.ok();
+    }
+
+    @PostMapping("/received")
+    public R receivePurcharseDetail(@RequestBody List<Long> ids){
+        wmsPurchaseService.received(ids);
+        return R.ok();
+    }
+
+
+    @PostMapping("/done")
+    public R finishPurcharseDetail(@RequestBody PurchaseFinishVo purchaseFinishVo){
+        wmsPurchaseService.finshed(purchaseFinishVo);
+        return R.ok();
+    }
 }

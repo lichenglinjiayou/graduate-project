@@ -25,7 +25,7 @@ import com.lichenglin.common.utils.R;
  * @date 2022-02-09 21:37:34
  */
 @RestController
-@RequestMapping("repository/wmswareinfo")
+@RequestMapping("ware/wareinfo")
 public class WmsWareInfoController {
     @Autowired
     private WmsWareInfoService wmsWareInfoService;
@@ -35,7 +35,7 @@ public class WmsWareInfoController {
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = wmsWareInfoService.queryPage(params);
+        PageUtils page = wmsWareInfoService.queryPageByCondition(params);
 
         return R.ok().put("page", page);
     }

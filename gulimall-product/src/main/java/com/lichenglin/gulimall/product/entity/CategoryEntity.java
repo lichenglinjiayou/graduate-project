@@ -1,10 +1,15 @@
 package com.lichenglin.gulimall.product.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 /**
@@ -39,6 +44,9 @@ public class CategoryEntity implements Serializable {
 	/**
 	 * 是否显示[0-不显示，1显示]
 	 */
+//	添加逻辑删除注解
+//	可以自定义局部的逻辑删除规则
+	@TableLogic(value = "1",delval = "0")
 	private Integer showStatus;
 	/**
 	 * 排序
@@ -56,5 +64,10 @@ public class CategoryEntity implements Serializable {
 	 * 商品数量
 	 */
 	private Integer productCount;
+
+	// 2 使用该注解进行判断，如果为空，则不包含该字段；
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+	@TableField(exist = false)
+	private List<CategoryEntity> children;
 
 }

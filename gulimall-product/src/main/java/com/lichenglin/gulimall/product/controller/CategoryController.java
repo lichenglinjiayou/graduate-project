@@ -1,6 +1,7 @@
 package com.lichenglin.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,16 @@ public class CategoryController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = categoryService.queryPage(params);
+    @RequestMapping("/list/tree")
+    public R list(){
+        List<CategoryEntity> categories = categoryService.listByTree();
+        return R.ok().put("category", categories);
+    }
 
-        return R.ok().put("page", page);
+    @RequestMapping("/list")
+    public R getList(){
+        List<CategoryEntity> list = categoryService.list(null);
+        return  R.ok().put("info",list);
     }
 
 
@@ -66,8 +72,14 @@ public class CategoryController {
      */
     @RequestMapping("/update")
     public R update(@RequestBody CategoryEntity category){
-		categoryService.updateById(category);
+//		categoryService.updateById(category);
+        categoryService.updateCascade(category);
+        return R.ok();
+    }
 
+    @RequestMapping("/update/sort")
+    public R updateSort(@RequestBody CategoryEntity[] category){
+        categoryService.updateBatchById(Arrays.asList(category));
         return R.ok();
     }
 
@@ -76,8 +88,8 @@ public class CategoryController {
      */
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] catIds){
-		categoryService.removeByIds(Arrays.asList(catIds));
-
+//		categoryService.removeByIds(Arrays.asList(catIds));
+        categoryService.removeMenuByIds(Arrays.asList(catIds));
         return R.ok();
     }
 
