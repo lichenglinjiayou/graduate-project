@@ -3,7 +3,7 @@
 
 <mapper namespace="com.lichenglin.gulimall.product.dao.SkuSaleAttrValueDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.lichenglin.gulimall.product.entity.SkuSaleAttrValueEntity" id="skuSaleAttrValueMap">
         <result property="id" column="id"/>
         <result property="skuId" column="sku_id"/>
@@ -12,6 +12,22 @@
         <result property="attrValue" column="attr_value"/>
         <result property="attrSort" column="attr_sort"/>
     </resultMap>
+    <resultMap id="skuItemVo" type="com.lichenglin.gulimall.product.vo.spu.SkuItemSaleAttrsVo">
+        <result column="attrId" property="attrId"></result>
+        <result column="attrName" property="attrName"></result>
+        <collection property="attrValues" ofType="com.lichenglin.gulimall.product.vo.AttrValueWithSkuIdVo">
+            <result column="attrValues" property="attrValues"></result>
+            <result column="skuIds" property="skuIds"></result>
+        </collection>
+    </resultMap>
+    <select id="getSaleAttrsBySpuId"
+            resultMap="skuItemVo">
+                 SELECT ssav.attr_id attrId,ssav.attr_name attrName, ssav.attr_value attrValues,GROUP_CONCAT(info.sku_id)  skuIds FROM pms_sku_info info LEFT JOIN pms_sku_sale_attr_value  ssav ON ssav.sku_id = info.sku_id
+            WHERE info.spu_id = #{spuId} GROUP BY attrId , attrName, attrValues
+    </select>
+    <select id="getAttrAsStringList" resultType="java.lang.String">
+        SELECT CONCAT(attr_name,':',attr_value) FROM `pms_sku_sale_attr_value` WHERE sku_id = #{skuId}
+    </select>
 
 
 </mapper>

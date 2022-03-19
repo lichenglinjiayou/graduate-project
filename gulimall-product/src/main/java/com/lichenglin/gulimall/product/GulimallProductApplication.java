@@ -4,8 +4,10 @@ import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 
 /** 1 后端校验：使用JSR303
@@ -31,14 +33,20 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *      (4) 一个校验注解可以绑定多个自定义的校验器；
  *
  *
- *
+ * 1. EnableRedisHttpSession => RedisHttpSessionConfiguration
+ *      RedisOperationsSessionRepository : session crud的封装类
+ *      SessionRepositoryFilter ：session存储过滤器
+ *      创建对象时，获取sessionRepository;
+ *      使用wrapperRequest包装request;
+ *      调用wrapperRequest的getSession方法，从sessionRepository找到session对象；
  *
  *   */
-
+@EnableCaching
 @EnableFeignClients(basePackages = "com.lichenglin.gulimall.product.feign")
 @SpringBootApplication
 @MapperScan(value = {"com.lichenglin.gulimall.product.dao"})
 @EnableDiscoveryClient
+@EnableRedisHttpSession
 public class GulimallProductApplication {
 
     public static void main(String[] args) {

@@ -1,14 +1,12 @@
-package com.lichenglin.gulimall.product.controller;
+package com.lichenglin.gulimall.product.app;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.lichenglin.gulimall.product.vo.SkuItemVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.product.entity.SkuInfoEntity;
 import com.lichenglin.gulimall.product.service.SkuInfoService;
@@ -81,4 +79,10 @@ public class SkuInfoController {
         return R.ok();
     }
 
+    @GetMapping("/getPrice")
+    public R getPrice(@RequestParam("skuId") Long skuId){
+        SkuInfoEntity skuInfoEntity = skuInfoService.getById(skuId);
+        BigDecimal price = skuInfoEntity.getPrice();
+        return R.ok().setData(price);
+    }
 }

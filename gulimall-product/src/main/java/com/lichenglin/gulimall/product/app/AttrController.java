@@ -1,4 +1,4 @@
-package com.lichenglin.gulimall.product.controller;
+package com.lichenglin.gulimall.product.app;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,6 @@ import com.lichenglin.gulimall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.lichenglin.gulimall.product.entity.AttrEntity;
 import com.lichenglin.gulimall.product.service.AttrService;
 import com.lichenglin.common.utils.PageUtils;
 import com.lichenglin.common.utils.R;

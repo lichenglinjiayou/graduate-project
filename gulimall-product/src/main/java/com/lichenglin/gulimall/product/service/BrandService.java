@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lichenglin.common.utils.PageUtils;
 import com.lichenglin.gulimall.product.entity.BrandEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,5 +19,7 @@ public interface BrandService extends IService<BrandEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     void updateDetails(BrandEntity brand);
+
+    List<BrandEntity> getBrands(List<Long> brandIds);
 }
 

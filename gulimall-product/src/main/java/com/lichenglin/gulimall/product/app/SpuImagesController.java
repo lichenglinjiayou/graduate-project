@@ -1,4 +1,4 @@
-package com.lichenglin.gulimall.product.controller;
+package com.lichenglin.gulimall.product.app;
 
 import java.util.Arrays;
 import java.util.Map;

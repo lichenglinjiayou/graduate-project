@@ -1,14 +1,15 @@
 package com.lichenglin.gulimall.repository.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.lichenglin.common.exception.BizCodeEnum;
+import com.lichenglin.gulimall.repository.vo.LockStockResultVo;
+import com.lichenglin.gulimall.repository.vo.SkuHasStockVo;
+import com.lichenglin.gulimall.repository.vo.WareSkuLockVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.repository.entity.WmsWareSkuEntity;
 import com.lichenglin.gulimall.repository.service.WmsWareSkuService;
@@ -30,6 +31,16 @@ public class WmsWareSkuController {
     @Autowired
     private WmsWareSkuService wmsWareSkuService;
 
+    /**
+     * 查询sku是否有库存
+     */
+    @PostMapping("/hasStock")
+    public R getSkusHasStock(@RequestBody List<Long> skuIds){
+        List<SkuHasStockVo> list = wmsWareSkuService.hasStock(skuIds);
+        R ok = R.ok();
+
+        return ok.setData(list);
+    }
     /**
      * 列表
      */
@@ -79,6 +90,18 @@ public class WmsWareSkuController {
 		wmsWareSkuService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
+    }
+
+    @PostMapping("/lock")
+    public R orderLockStock(@RequestBody WareSkuLockVo wareSkuLockVo){
+        Boolean result = null;
+        try {
+            result = wmsWareSkuService.lockOrder(wareSkuLockVo);
+            return R.ok().setData(result);
+        } catch (Exception e) {
+//            e.printStackTrace();
+            return R.error(BizCodeEnum.NO_STOCK_EXCEPTION.getCode(),BizCodeEnum.NO_STOCK_EXCEPTION.getMessage());
+        }
     }
 
 }

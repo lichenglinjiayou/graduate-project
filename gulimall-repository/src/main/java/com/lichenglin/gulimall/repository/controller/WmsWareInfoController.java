@@ -1,14 +1,12 @@
 package com.lichenglin.gulimall.repository.controller;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.lichenglin.gulimall.repository.vo.FareResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.repository.entity.WmsWareInfoEntity;
 import com.lichenglin.gulimall.repository.service.WmsWareInfoService;
@@ -81,4 +79,11 @@ public class WmsWareInfoController {
         return R.ok();
     }
 
+
+    @GetMapping("/fare")
+    public R getFare(@RequestParam("addrId") Long addrId){
+        FareResponseVo fare = wmsWareInfoService.getAddressFare(addrId);
+        //根据收货地址，计算运费
+        return R.ok().setData(fare);
+    }
 }

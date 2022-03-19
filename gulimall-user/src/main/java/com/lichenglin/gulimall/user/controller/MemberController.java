@@ -3,13 +3,14 @@ package com.lichenglin.gulimall.user.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.lichenglin.common.exception.BizCodeEnum;
+import com.lichenglin.gulimall.user.exception.PhoneExistsException;
+import com.lichenglin.gulimall.user.exception.UsernameExistsException;
 import com.lichenglin.gulimall.user.feign.UserCoupon;
+import com.lichenglin.gulimall.user.vo.UserLoginVo;
+import com.lichenglin.gulimall.user.vo.UserRegistVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.user.entity.MemberEntity;
 import com.lichenglin.gulimall.user.service.MemberService;
@@ -41,6 +42,29 @@ public class MemberController {
         memberEntity.setCity("西安");
         return R.ok().put("user",memberEntity).put("coupons",userCoupon.userCoupon().get("coupons"));
     }
+
+    @PostMapping("/regist")
+    public R regist(@RequestBody UserRegistVo userRegistVo){
+        try {
+            memberService.regist(userRegistVo);
+        } catch (PhoneExistsException e) {
+            return R.error(BizCodeEnum.TELEPHONE_EXIST_EXCEPTION.getCode(),BizCodeEnum.TELEPHONE_EXIST_EXCEPTION.getMessage());
+        }catch (UsernameExistsException e){
+            return R.error(BizCodeEnum.USER_EXIST_EXCEPTION.getCode(),BizCodeEnum.USER_EXIST_EXCEPTION.getMessage());
+        }
+        return R.ok();
+    }
+
+    @PostMapping("/login")
+    public R login(@RequestBody UserLoginVo userLoginVo){
+        MemberEntity memberEntity = memberService.login(userLoginVo);
+        if(memberEntity != null){
+            return R.ok().setData(memberEntity);
+        }else{
+            return R.error(BizCodeEnum.LOGIN_FAILED_EXCEPTION.getCode(),BizCodeEnum.LOGIN_FAILED_EXCEPTION.getMessage());
+        }
+    }
+
 
     /**
      * 列表

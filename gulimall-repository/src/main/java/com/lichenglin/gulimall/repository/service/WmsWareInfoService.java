@@ -3,7 +3,9 @@ package com.lichenglin.gulimall.repository.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lichenglin.common.utils.PageUtils;
 import com.lichenglin.gulimall.repository.entity.WmsWareInfoEntity;
+import com.lichenglin.gulimall.repository.vo.FareResponseVo;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -18,5 +20,7 @@ public interface WmsWareInfoService extends IService<WmsWareInfoEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     PageUtils queryPageByCondition(Map<String, Object> params);
+
+    FareResponseVo getAddressFare(Long addrId);
 }
 

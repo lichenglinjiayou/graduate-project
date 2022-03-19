@@ -1,14 +1,11 @@
 package com.lichenglin.gulimall.user.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.user.entity.MemberReceiveAddressEntity;
 import com.lichenglin.gulimall.user.service.MemberReceiveAddressService;
@@ -81,4 +78,10 @@ public class MemberReceiveAddressController {
         return R.ok();
     }
 
+
+    @GetMapping("/{userId}/address")
+    public List<MemberReceiveAddressEntity> getAddress(@PathVariable("userId") Long memberId){
+        List<MemberReceiveAddressEntity> addresses =  memberReceiveAddressService.getAddressByUserId(memberId);
+        return addresses;
+    }
 }

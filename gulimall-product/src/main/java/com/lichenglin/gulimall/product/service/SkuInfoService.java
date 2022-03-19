@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lichenglin.common.utils.PageUtils;
 import com.lichenglin.gulimall.product.entity.SkuInfoEntity;
 import com.lichenglin.gulimall.product.entity.SpuInfoEntity;
+import com.lichenglin.gulimall.product.vo.SkuItemVo;
 import com.lichenglin.gulimall.product.vo.spu.SpuSaveVo;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +25,10 @@ public interface SkuInfoService extends IService<SkuInfoEntity> {
     void saveSkuInfo(SpuInfoEntity spuInfoEntity, SpuSaveVo spuSaveVo);
 
     PageUtils queryPageByCondition(Map<String, Object> params);
+
+    List<SkuInfoEntity> getSkusBySpuId(Long spuId);
+
+    SkuItemVo getSkuInfo(Long skuId);
 
 }
 

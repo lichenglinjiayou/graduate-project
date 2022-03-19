@@ -1,9 +1,15 @@
 package com.lichenglin.gulimall.repository.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lichenglin.common.to.StockLockedTo;
+import com.lichenglin.common.to.mq.OrderTo;
 import com.lichenglin.common.utils.PageUtils;
 import com.lichenglin.gulimall.repository.entity.WmsWareSkuEntity;
+import com.lichenglin.gulimall.repository.vo.LockStockResultVo;
+import com.lichenglin.gulimall.repository.vo.SkuHasStockVo;
+import com.lichenglin.gulimall.repository.vo.WareSkuLockVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,5 +26,14 @@ public interface WmsWareSkuService extends IService<WmsWareSkuEntity> {
     PageUtils queryPageByCondition(Map<String, Object> params);
 
     void saveSkuInfo(WmsWareSkuEntity wmsWareSkuEntity);
+
+    List<SkuHasStockVo> hasStock(List<Long> skuIds);
+
+    Boolean lockOrder(WareSkuLockVo wareSkuLockVo);
+
+    void unlockStock(StockLockedTo stockLockedTo);
+
+    void unlockStockOrderTo(OrderTo orderTo);
+
 }
 

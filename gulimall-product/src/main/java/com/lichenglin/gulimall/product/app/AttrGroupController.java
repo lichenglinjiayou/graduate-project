@@ -1,11 +1,9 @@
-package com.lichenglin.gulimall.product.controller;
+package com.lichenglin.gulimall.product.app;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.lichenglin.gulimall.product.dao.AttrAttrgroupRelationDao;
-import com.lichenglin.gulimall.product.entity.AttrAttrgroupRelationEntity;
 import com.lichenglin.gulimall.product.entity.AttrEntity;
 import com.lichenglin.gulimall.product.service.AttrAttrgroupRelationService;
 import com.lichenglin.gulimall.product.service.AttrService;

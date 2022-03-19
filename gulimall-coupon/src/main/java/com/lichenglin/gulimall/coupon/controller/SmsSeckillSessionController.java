@@ -1,14 +1,11 @@
 package com.lichenglin.gulimall.coupon.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.coupon.entity.SmsSeckillSessionEntity;
 import com.lichenglin.gulimall.coupon.service.SmsSeckillSessionService;
@@ -40,6 +37,14 @@ public class SmsSeckillSessionController {
         return R.ok().put("page", page);
     }
 
+    /**
+     *
+     */
+    @GetMapping("/session")
+    public R getSessionLatest3Days(){
+       List<SmsSeckillSessionEntity> result = smsSeckillSessionService.getSessionLatest3Days();
+       return R.ok().setData(result);
+    }
 
     /**
      * 信息

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.lichenglin.common.utils.PageUtils;
 import com.lichenglin.gulimall.coupon.entity.SmsSeckillSessionEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface SmsSeckillSessionService extends IService<SmsSeckillSessionEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    List<SmsSeckillSessionEntity> getSessionLatest3Days();
 }
 

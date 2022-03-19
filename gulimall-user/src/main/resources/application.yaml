@@ -11,7 +11,17 @@ spring:
 #        server-addr: 127.0.0.1:8848
   application:
     name: gulimall-user
-
+  thymeleaf:
+    cache: false
+  redis:
+    host: 192.168.127.138
+    port: 6379
+  session:
+    store-type: redis
+  cloud:
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
 #mybatis-plus:
 #  mapper-locations: classpath:/mapper/user/*.xml
 #  #  主键自增
@@ -21,4 +31,15 @@ spring:
 
 
 #server:
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 #  port: 11000
+logging:
+  level:
+    #远程调用打印日志
+    org.springframework.cloud.openFeign: debug
+    #链路追踪打印日志
+    org.springframework.cloud.sleuth: debug

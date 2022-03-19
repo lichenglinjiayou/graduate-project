@@ -1,6 +1,7 @@
-package com.lichenglin.gulimall.product.controller;
+package com.lichenglin.gulimall.product.app;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.lichenglin.common.valid.AddGroup;
@@ -8,11 +9,7 @@ import com.lichenglin.common.valid.UpdateGroup;
 import com.lichenglin.common.valid.UpdateStatusGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.product.entity.BrandEntity;
 import com.lichenglin.gulimall.product.service.BrandService;
@@ -54,6 +51,12 @@ public class BrandController {
 		BrandEntity brand = brandService.getById(brandId);
 
         return R.ok().put("brand", brand);
+    }
+
+    @GetMapping("/infos")
+    public R info(@RequestParam("brandIds")List<Long> brandIds){
+       List<BrandEntity> entities =  brandService.getBrands(brandIds);
+       return  R.ok().put("data",entities);
     }
 
     /**

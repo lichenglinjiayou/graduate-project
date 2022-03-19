@@ -3,12 +3,10 @@ package com.lichenglin.gulimall.order.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.lichenglin.gulimall.order.entity.OrderReturnApplyEntity;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.lichenglin.gulimall.order.entity.OrderEntity;
 import com.lichenglin.gulimall.order.service.OrderService;
@@ -29,6 +27,10 @@ import com.lichenglin.common.utils.R;
 public class OrderController {
     @Autowired
     private OrderService orderService;
+
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     /**
      * 列表
@@ -81,4 +83,27 @@ public class OrderController {
         return R.ok();
     }
 
+    @GetMapping("/sendMsg")
+    @ResponseBody
+    public String sendMsg(){
+        for(int i = 0;i<5;i++){
+            OrderReturnApplyEntity orderReturnApplyEntity = new OrderReturnApplyEntity();
+            orderReturnApplyEntity.setId(1L);
+            orderReturnApplyEntity.setCompanyAddress("西安");
+            rabbitTemplate.convertAndSend("java_exchange","java_queue",orderReturnApplyEntity);
+        }
+        return "ok";
+    }
+
+    @GetMapping("/status/{orderSn}")
+    public R getOrderStatus(@PathVariable("orderSn") String orderSn){
+       OrderEntity orderEntity =  orderService.getOrderByOrderSn(orderSn);
+       return  R.ok().setData(orderEntity);
+    }
+
+    @PostMapping("/listWithItem")
+    public R getItemList(@RequestBody Map<String,Object> params){
+        PageUtils page = orderService.queryPageWithItem(params);
+        return R.ok().setData(page);
+    }
 }

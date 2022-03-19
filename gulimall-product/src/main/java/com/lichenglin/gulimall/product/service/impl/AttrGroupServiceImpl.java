@@ -1,9 +1,14 @@
 package com.lichenglin.gulimall.product.service.impl;
 
+import com.lichenglin.gulimall.product.entity.AttrAttrgroupRelationEntity;
 import com.lichenglin.gulimall.product.entity.AttrEntity;
+import com.lichenglin.gulimall.product.entity.ProductAttrValueEntity;
 import com.lichenglin.gulimall.product.service.AttrAttrgroupRelationService;
 import com.lichenglin.gulimall.product.service.AttrService;
+import com.lichenglin.gulimall.product.service.ProductAttrValueService;
 import com.lichenglin.gulimall.product.vo.AttrGroupWithAttrsVo;
+import com.lichenglin.gulimall.product.vo.SkuItemVo;
+import com.lichenglin.gulimall.product.vo.spu.Attr;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +36,12 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     @Autowired
     AttrService attrService;
+
+    @Autowired
+    ProductAttrValueService productAttrValueService;
+
+    @Autowired
+    AttrGroupService attrGroupService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -81,5 +92,33 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             vos.add(attrGroupWithAttrsVo);
         });
         return vos;
+    }
+
+    @Override
+    public List<SkuItemVo.SpuItemBaseAttrsGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId,Long catalogId) {
+        List<AttrGroupEntity> attrGroupEntities = attrGroupService.list(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catalogId));
+        List<SkuItemVo.SpuItemBaseAttrsGroupVo> spuItemBaseAttrsGroupVoList = new ArrayList<>();
+        attrGroupEntities.forEach((item)->{
+            SkuItemVo.SpuItemBaseAttrsGroupVo entity = new SkuItemVo.SpuItemBaseAttrsGroupVo();
+            entity.setGroupName(item.getAttrGroupName());
+
+            List<SkuItemVo.SpuBaseAttrsVo> spuBaseAttrsVoList = new ArrayList<>();
+            List<AttrAttrgroupRelationEntity> attrAttrgroupRelationEntities = attrAttrgroupRelationService.list(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_group_id", item.getAttrGroupId()));
+            attrAttrgroupRelationEntities.forEach((obj)->{
+                SkuItemVo.SpuBaseAttrsVo spuBaseAttrsVo = new SkuItemVo.SpuBaseAttrsVo();
+                AttrEntity attrEntity = attrService.getById(obj.getAttrId());
+                spuBaseAttrsVo.setAttrName(attrEntity.getAttrName());
+                List<ProductAttrValueEntity> productAttrValueEntities = productAttrValueService.list(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id", spuId).eq("attr_id", obj.getAttrId()));
+                List<String> attrValues = new ArrayList<>();
+                productAttrValueEntities.forEach((product)->{
+                    attrValues.add(product.getAttrValue());
+                });
+                spuBaseAttrsVo.setAttrValue(attrValues);
+                spuBaseAttrsVoList.add(spuBaseAttrsVo);
+            });
+            entity.setAttrs(spuBaseAttrsVoList);
+            spuItemBaseAttrsGroupVoList.add(entity);
+        });
+        return  spuItemBaseAttrsGroupVoList;
     }
 }

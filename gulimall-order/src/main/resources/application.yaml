@@ -2,11 +2,53 @@ server:
   port: 8000
 
 spring:
+  zipkin:
+    base-url: http://192.168.127.138:9411/
+    #zipkin关闭自己的服务发现功能
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1 #采样器，默认为0.1，即采样10%；
   datasource:
     username: root
     password: lcl19960822
-    url: jdbc:mysql://192.168.127.135:3308/gulimall_oms
+    url: jdbc:mysql://192.168.127.138:3308/gulimall_oms
     driver-class-name: com.mysql.jdbc.Driver
+  rabbitmq:
+    host: 192.168.127.138
+    port: 5672
+    virtual-host: /
+    #开启发送端确认
+    publisher-confirms: true
+    #发送端消息抵达队列确认
+    publisher-returns: true
+    template:
+      #只要抵达队列，以异步方式优先回复return确认；
+      mandatory: true
+    #ack回复从auto切换到手动模式；
+    listener:
+      simple:
+        acknowledge-mode: manual
+  thymeleaf:
+    cache: false
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
+  application:
+    name: gulimall-order
+  redis:
+    host: 192.168.127.138
+    port: 6379
+  session:
+    store-type: redis
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:SS
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/order/*.xml
@@ -14,3 +56,20 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+gulimall:
+  thread:
+    core-pool-size: 30
+    max-pool-size: 200
+    keep-alive-time: 30
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    #远程调用打印日志
+    org.springframework.cloud.openFeign: debug
+    #链路追踪打印日志
+    org.springframework.cloud.sleuth: debug
