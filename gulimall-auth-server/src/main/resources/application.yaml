@@ -1,0 +1,44 @@
+spring:
+  zipkin:
+    base-url: http://192.168.127.138:9411/
+    #zipkin关闭自己的服务发现功能
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1 #采样器，默认为0.1，即采样10%；
+  application:
+    name: gulimall-auth-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
+  thymeleaf:
+    cache: false
+  redis:
+    host: 192.168.127.138
+    port: 6379
+  session:
+    store-type: redis
+server:
+  port: 16000
+  servlet:
+    session:
+      timeout: 30
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+logging:
+  level:
+    #远程调用打印日志
+    org.springframework.cloud.openFeign: debug
+    #链路追踪打印日志
+    org.springframework.cloud.sleuth: debug

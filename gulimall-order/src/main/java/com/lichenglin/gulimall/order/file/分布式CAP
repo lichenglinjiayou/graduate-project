@@ -1,0 +1,32 @@
+在微服务架构中，分布式事务问题不可避免；
+各节点间数据库状态不能同步；
+CAP定理：
+Consistency: 一致性 分布式系统中的所有数据备份，在同一时刻是相同的值；
+Availability: 可用性
+Partition Tolerance: 分区容错性 不同分区网络之间的通信；
+三者不可兼顾，但是分区容错性必须满足； C、A 二选一；
+CP / AP
+
+raft算法/paxos算法：
+follower / leader / candidates;
+
+2PC模式：
+二阶提交协议；
+柔性事务-TCC事务补偿性方案；
+1. try 模块 = 预准备
+2. confirm 模块 = 提交
+3. cancel 模块 = rollback
+最大努力通知方案；
+-----------------
+
+seata:
+tc: 事务协调者；
+tm: 事务管理器；
+rm: 资源管理器；
+
+tm -> global transaction -> tc
+tm -> rpc -> rm
+rm -> branch/report status -> tc
+
+tc一旦知道存在资源管理器回滚，则会让注册的所有资源管理器均回滚；
+

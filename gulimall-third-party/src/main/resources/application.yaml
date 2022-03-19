@@ -1,0 +1,32 @@
+spring:
+  zipkin:
+    base-url: http://192.168.127.138:9411/
+    #zipkin关闭自己的服务发现功能
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1 #采样器，默认为0.1，即采样10%；
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  application:
+    name: gulimall-third-party
+  alicloud:
+    smscode:
+      host: https://fsmsn.market.alicloudapi.com
+      path: /fsms132
+      appcode: 455ad3e1e9084e2d96b55689a6dc7c50
+      sign: 175622
+      skin: 1
+server:
+  port: 13000
+alibaba:
+  cloud:
+    access-key: LTAI5tGariZtMGB9M8TF76sB
+    secret-key: qHg0xapbwMot7lYPGpWqAg4atvTnkc
+    oss:
+      endpoint: oss-eu-west-1.aliyuncs.com
+      bucket: gulimall-lichenglin

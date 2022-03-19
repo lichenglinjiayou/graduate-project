@@ -1,0 +1,10 @@
+server:
+  port: 30000
+#spring:
+#  session:
+#    store-type: redis
+spring:
+  redis:
+    host: 192.168.127.138
+    port: 6379
+

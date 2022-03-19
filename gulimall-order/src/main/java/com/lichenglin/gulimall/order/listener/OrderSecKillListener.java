@@ -1,0 +1,33 @@
+package com.lichenglin.gulimall.order.listener;
+
+import com.lichenglin.common.to.SeckillOrderTo;
+import com.lichenglin.gulimall.order.service.OrderService;
+import com.rabbitmq.client.Channel;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+@Slf4j
+@RabbitListener(queues = "order.seckill.queue")
+@Component
+public class OrderSecKillListener {
+
+    @Autowired
+    OrderService orderService;
+
+    @RabbitHandler
+    public void listener(SeckillOrderTo seckillOrderTo, Channel channel, Message message) throws IOException {
+        log.info("秒杀的商品信息：{}",seckillOrderTo);
+        try {
+            orderService.createSeckillOrder(seckillOrderTo);
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
+        } catch (Exception e) {
+            channel.basicReject(message.getMessageProperties().getDeliveryTag(),true);
+        }
+    }
+}
