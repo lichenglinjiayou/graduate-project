@@ -29,7 +29,7 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     List<CategoryEntity> getAllLevelOneCategory();
 
-    Map<String, List<Catalog2Vo>> getCatalogJsonFromDBWithRedissonLock();
+    Map<String, List<Catalog2Vo>> getCatalogJson();
 
 }
 

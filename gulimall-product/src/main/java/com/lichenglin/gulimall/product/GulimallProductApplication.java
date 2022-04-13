@@ -41,6 +41,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  *      调用wrapperRequest的getSession方法，从sessionRepository找到session对象；
  *
  *   */
+// enable caching function
 @EnableCaching
 @EnableFeignClients(basePackages = "com.lichenglin.gulimall.product.feign")
 @SpringBootApplication

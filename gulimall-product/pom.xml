@@ -52,6 +52,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
             <exclusions>
+                <!--SpringBoot2.0 uses lettuce as the connection client of redis by default,
+                and lettuce uses netty for network communication; if don't set direct memory,netty will use -Xmx as direct memory,
+                you can set direct memory by -Dio.netty.maxDirectMemory;But only increasing the external memory will only
+                delay the occurrence of external memory overflow exceptions.So this project use jedis as connection client of redis.-->
                 <exclusion>
                     <groupId>io.lettuce</groupId>
                     <artifactId>lettuce-core</artifactId>
@@ -62,14 +66,15 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
         </dependency>
-<!--        整合redisson作为分布式锁等功能框架    -->
-<!--        1.锁的自动续期，不要担心业务时间过长，导致锁自动过期被删掉-->
-<!--        2.加锁业务运行完成，不会为当前锁续期，锁默认在30s以后删除-->
+        <!--
+            Using redisson as a framework for distributed locks
+        -->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
             <version>3.12.0</version>
         </dependency>
+        <!-- import spring.boot.starter.cache  manage cache-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>

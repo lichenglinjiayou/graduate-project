@@ -49,6 +49,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    // inject RedissonClient Object;
     @Autowired
     private RedissonClient redissonClient;
 
@@ -133,14 +134,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     @Transactional
-    //缓存-失效模式
-//    @CacheEvict(value = "category",key = "'getAllLevelOneCategory'")
-    //组合多操作
-    @Caching(evict = {@CacheEvict(value = "category",key = "'getAllLevelOneCategory'"),
-                      @CacheEvict(value = "category",key = "'getCatalogJson'")})
-//    @CacheEvict(value = "category",allEntries = true)
-    // 双写模式
-//    @CachePut
+    // use @caching combine multiple operation
+    // rectify data delete two cache
+    @Caching(evict = {@CacheEvict(value = "category", key = "'getAllLevelOneCategory'"),
+            @CacheEvict(value = "category", key = "'getCatalogJson'")})
+    // @CacheEvict(value = "category",allEntries = true) =>  delete all data under the 'category' partition
+    // @CachePut
     public void updateCascade(CategoryEntity category) {
         this.updateById(category);
         if (!StringUtils.isEmpty(category.getName())) {
@@ -151,21 +150,27 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         }
     }
 
-    @Cacheable(value = {"category"},key = "#root.methodName",sync = true) // 代表当前方法的结果需要缓存，缓存中有，则不在调用方法；
-    //每一个需要缓存的数据，都需要指定缓存的名字；
-    //redis中缓存数据的key,默认为cache name::SimpleKey []
-    //默认生成的缓存永不过期；
-    //存放的数据为Java序列化后的数据；
-    /*常规数据（读多写少，即时性，一致性要求不高的数据） = > SpringCache
-      特殊数据 特殊设计
-    * */
-  @Override
+    /**
+     * @return
+     * @Cacheable: The return result of the current method needs to be cached,
+     * If hit in the cache,the method will not be called;
+     * value : Set the partition to which the cache is added
+     * key : set generated key
+     * <p>
+     * Attention:
+     * 1. key is automatically generated, cache name :: SimpleKey[]
+     * 2. value is serializable outcome
+     * 3. The default cache expiration time is never expire
+     */
+    @Cacheable(value = {"category"}, key = "#root.methodName", sync = true)
+    @Override
     public List<CategoryEntity> getAllLevelOneCategory() {
         List<CategoryEntity> entities = this.list(new QueryWrapper<CategoryEntity>().eq("cat_level", 1));
         return entities;
     }
 
-    @Cacheable(value = "cateogory",key = "#root.methodName",sync = true)
+    @Cacheable(value = {"cateogory"}, key = "#root.methodName", sync = true)
+    @Override
     public Map<String, List<Catalog2Vo>> getCatalogJson() {
         List<CategoryEntity> allData = this.baseMapper.selectList(null);
         List<CategoryEntity> levelOneCategory = getParent_cid(allData, 0L);
@@ -195,89 +200,81 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     /**
-     * 堆外内存溢出异常？
-     * springboot2.0以后默认使用lettuce作为操作redis的客户端，使用netty进行网络通信；
-     * lettuce的bug导致堆外内存溢出。
-     * 可以通过-Dio.netty.maxDirectMemory进行设置，但是不能只使用该设置去调大内存；
-     * 解决方案： 1.升级lettuce客户端；2.切换使用jedis；
-     * <p>
-     * 1.空结果缓存：缓存穿透；
-     * 2.过期时间加随机值：缓存雪崩；
-     * 3.加锁：缓存击穿；
-     * 本地锁，由于所有的中间件都是单实例的，所有可以锁住一个服务器上的并发请求；但是
-     * 在多台服务器上，本地锁只能锁自己的服务器，因此需要使用分布式锁；
+     * Problems caused by cache invalidation in a high concurrency environment:
+     * 1. Cache penetration : not hit in cache and data don't exist in the DB,lots of requests
+     * falls into DB. If it can't afford the pressure, DB Server will down. Solutions: cache null value in a period of time;
+     * 2. Cache Avalanche : A large amount of cached data is invalidated at the same time,leading requests will access DB Server.
+     * Solution: Add a random value to the original expiration time of the cached data to prevent the cached data from invalidating at the same time;
+     * 3. Cache breakdown: hot data stored in Cache invalidate. Solution: Locking to ensure that only one request accesses the database at the same time;
+     * @return
+     */
+
+    /**
+     * Problem：How the data in the cache is consistent with the data in the database?
+     * 1.double writing；rectify the data in the database and then update the data in the cache;
+     * 2.invalidation mode；rectify the data in the database and then delete the data in the cache;
      *
      * @return
      */
-
-
-    public Map<String, List<Catalog2Vo>> getCatalogJson2() {
-        // 加入redis缓存
-        String catalogJSON = stringRedisTemplate.opsForValue().get("catalogJSON");
-        //先查看redis缓存中是否有该数据，没有则查数据库，并将查询结果加入到缓存中
-        if (StringUtils.isEmpty(catalogJSON)) {
-            Map<String, List<Catalog2Vo>> catalogJsonFromDB = getCatalogJsonFromDBWithRedissonLock();
-
-            return catalogJsonFromDB;
-        }
-        //否则，直接获取缓存中的数据，反序列化后，进行返回；
-        Map<String, List<Catalog2Vo>> result = JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {
-        });
-        return result;
-    }
-
-    //使用Redisson分布式锁
-
-    /**
-     * 问题：缓存中的数据和数据库中的数据如何保持一致？
-     * 1.双写；修改完数据库，同时接着修改缓存中的数据；
-     * 2.失效；修改完数据库，删除缓存中的数据；
-     * @return
-     */
-    @Override
-    @Cacheable(value = "cateogory",key = "#root.methodName",sync = true)
+    @Cacheable(value = "cateogory", key = "#root.methodName", sync = true)
     public Map<String, List<Catalog2Vo>> getCatalogJsonFromDBWithRedissonLock() {
-        /**
-         * 1.一次访问数据库查询出所有的数据；
-         */
-        //锁的名字决定锁的粒度；约定：具体缓存某个数据，则锁在具体的商品上；
+        // The name of the lock determines the granularity of the lock;
+        // use distributed Lock - Reentrant Lock;
         RLock lock = redissonClient.getLock("catalogJSON-lock");
         lock.lock(30, TimeUnit.SECONDS);
         Map<String, List<Catalog2Vo>> dataFromDB;
         try {
             dataFromDB = getDataFromDB();
-        }finally {
-                lock.unlock();
-            }
-            return dataFromDB;
+        } finally {
+            lock.unlock();
+        }
+        return dataFromDB;
     }
 
-    //使用分布式锁
+    /*
+       Distributed Lock:
+       SET Key value [EX seconds] [PX milliseconds] [NX]
+       When the key does not exist in the cache, store the key-value pair;
+       EX|PX - set expiration time;
+     */
     public Map<String, List<Catalog2Vo>> getCatalogJsonFromDBWithRedisLock() {
-        /**
-         * 1.一次访问数据库查询出所有的数据；
+        /*
+            Generate its own UUID for each server:
+                Reason : The server executes business logic for too long, causing its own lock to expire long ago.
+                When the business is finished deleting the lock,
+                it will delete the lock resources occupied by other servers.
          */
-        //搶占分佈式鎖
         String token = UUID.randomUUID().toString();
+        /*
+           Preempting distributed locks;
+           Set the expiration time for the key-value to prevent the distributed lock from being released due to server power failure and other reasons,
+           and other servers cannot obtain the lock;
+         */
         Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent("lock", token, 30, TimeUnit.SECONDS);
         if (lock == true) {
+            // Set lock-token success;
             Map<String, List<Catalog2Vo>> dataFromDB;
             try {
-                //设置锁的过期时间，防止死锁，但是需要和加锁做到原子操作
-                //stringRedisTemplate.expire("lock",30, TimeUnit.SECONDS);
                 dataFromDB = getDataFromDB();
             } finally {
-//                String lockValue = stringRedisTemplate.opsForValue().get("lock");
-//            if(token.equals(lockValue)){
-//                stringRedisTemplate.delete("lock");
-//            }
-//            lua脚本解锁 = > 确保解锁的原子性；
+                /*
+                    The process of deleting the lock should also be guaranteed to be an atomic operation, that is,
+                    to determine whether the UUID is correct and to delete the cache record,
+                    either succeed or fail at the same time.
+                    Consequently, The code below is not entirely correct.
+
+                    String lockValue = stringRedisTemplate.opsForValue().get("lock");
+                    if(token.equals(lockValue)){
+                    stringRedisTemplate.delete("lock");
+                 */
+                // lua script guarantee atomic opeartion;
                 String script = "if redis call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
+                // execute lua script;
                 stringRedisTemplate.execute(new DefaultRedisScript<Long>(script, Long.class), Arrays.asList("lock"), token);
             }
             return dataFromDB;
         } else {
-            //获取锁失败，自旋重试
+            // Set lock-token fail, sleep 2s, then spin retry, try to lock again.
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -288,20 +285,22 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     private Map<String, List<Catalog2Vo>> getDataFromDB() {
-        //获取锁后，先去缓存中判断，是否缓存中已经存在数据；
+        // Firstly, attempt to obtain data from redis;
         String catalogJSON = stringRedisTemplate.opsForValue().get("catalogJSON");
+        // Judge whether the data queried from the Redis is empty;
         if (!StringUtils.isEmpty(catalogJSON)) {
+            // Redis cache has data, return data directly;
+            // Before returning data, convert JSON String to Map;
             return JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {
             });
         }
-        //如果没有，则查询数据库
-//        System.out.println("查询数据库");
+        // Not hit in Cache, query Mysql;
         List<CategoryEntity> allData = this.baseMapper.selectList(null);
         List<CategoryEntity> levelOneCategory = getParent_cid(allData, 0L);
         Map<String, List<Catalog2Vo>> map = new HashMap<>();
         levelOneCategory.forEach((item) -> {
             List<Catalog2Vo> catalog2Vos = new ArrayList<>();
-            List<CategoryEntity> entities = getParent_cid(allData,item.getCatId());
+            List<CategoryEntity> entities = getParent_cid(allData, item.getCatId());
             if (entities != null) {
                 entities.forEach((entity) -> {
                     List<Catalog3Vo> catalog3Vos = new ArrayList<>();
@@ -318,18 +317,23 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             }
             map.put(item.getCatId().toString(), catalog2Vos);
         });
+        // Because of the data type stored in the cache is string, we should call toJSONString() to convert Map to String;
         String s = JSON.toJSONString(map);
+        // Cache JSON data into the redis;
         stringRedisTemplate.opsForValue().set("catalogJSON", s);
         return map;
     }
 
-    //使用本地锁
+    /*
+     monolithic application: lock the current object.
+     Because of object conducted by Bean Container is singleton by default,so synchronized(this)
+     can guarantee only one request accesses the DB.
+     But in the distributed environment, a microservice will be distributed on multiple servers,
+     so this way can only limit multiple requests in one server.
+     Finally, this project determines to use  distributed lock.
+    */
     public Map<String, List<Catalog2Vo>> getCatalogJsonFromDBWithLocalLock() {
-        /**
-         * 1.一次访问数据库查询出所有的数据；
-         */
         synchronized (this) {
-            //获取锁后，先去缓存中判断，是否缓存中已经存在数据；
             return getDataFromDB();
         }
     }

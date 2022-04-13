@@ -22,11 +22,16 @@ spring:
     host: 192.168.127.138
     port: 6379
   cache:
+    # use redis as cache
     type: redis
     redis:
+      # set cache expiration time, unit: ms
       time-to-live: 3600000
-      key-prefix: CACHE_
+      # add prefix for keys in the cache
+#      key-prefix: CACHE_
+      # enable use cache prefix
       use-key-prefix: true
+      # cahce null value, prevent cache penetration
       cache-null-values: true
   session:
     store-type: redis

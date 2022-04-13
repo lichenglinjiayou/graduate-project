@@ -20,10 +20,15 @@ public class MyCacheConfig {
 
     @Autowired
     CacheProperties cacheProperties;
+    /*
+        add customized RedisCacheConfiguration to container.If not,the default
+        RedisCacheConfigurtion will be added to the container.
+     */
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration(){
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
-        //每次改变属性，会将原来的对象进行覆盖
+        // set customized key and value serialization mechanism
+        // The serialization method of value is JSON.
         config = config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
         config = config.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericFastJsonRedisSerializer()));
         CacheProperties.Redis redisProperties = cacheProperties.getRedis();
