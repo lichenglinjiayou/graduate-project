@@ -64,8 +64,9 @@
         </b>
         <ul>
             <li>
-                <a href="http://auth.gulimall.com/login.html" class="li_2" th:if="${session.loginUser == null}">你好，请登录</a>
-                <a  class="li_2" th:if="${session.loginUser != null}" style="width:150px">hello，[[${session.loginUser.loginAccount}]]</a>
+                <a href="http://auth.gulimall.com/login.html" class="li_2"
+                   th:if="${session.loginUser == null}">你好，请登录</a>
+                <a class="li_2" th:if="${session.loginUser != null}" style="width:150px">hello，[[${session.loginUser.loginAccount}]]</a>
             </li>
             <li>
                 <a href="http://auth.gulimall.com/register.html" th:if="${session.loginUser == null}">免费注册</a>
@@ -403,8 +404,8 @@
         <a href="http://gulimall.com"><img src="/static/search/image/logo1.jpg" alt=""></a>
     </div>
     <div class="header_form">
-        <input id="keyword_input" type="text" placeholder="手机" th:value="${param.keyword}"/>
-        <a href="javascript:searchByKeyword()">搜索</a>
+        <input id="keyword_input" type="text" placeholder="phone" th:value="${param.keyword}"/>
+        <a href="javascript:searchByKeyword()">Search</a>
     </div>
     <div class="header_ico">
         <div class="header_gw">
@@ -736,65 +737,63 @@
     </div>
 </div>
 
-<!--手机-->
+<!--Phone-->
 <div class="JD_ipone">
     <div class="JD_ipone_bar">
         <div class="JD_ipone_one a">
-            <a href="/static/search/#">手机</a>
+            <a href="/static/search/#" style="color:black">Phone</a>
         </div>
-        <i><img src="/static/search/image/right-@1x.png" alt=""></i>
+        <!--Phone Category-->
+        <div class="JD_ipone_one c">
+            <a href="/static/search/#" class="qqq" style="width: 130px;color: darkblue">Phone Category<img src="/static/search/image/down-@1x.png" style="margin-left: 10px"></a>
+            <div style="width: 600px">
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">elderly machine |</a>
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">walkie-talkie |</a>
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">female cell phone |</a>
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">battery life |</a>
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">full screen mobile phone |</a>
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">camera phone |</a>
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">game phone</a>
+            </div>
+        </div>
         <div class="JD_ipone_one b">
-            <a href="/static/search/#" class="qqq">手机通讯录 <img src="/static/search/image/down-@1x.png" alt=""></a>
+            <a href="/static/search/#" class="qqq" style="width: 150px;color: darkblue">Phone Accessories<img src="/static/search/image/down-@1x.png" style="margin-left: 10px"></a>
             <div>
-                <a href="/static/search/#">手机通讯</a>
-                <a href="/static/search/#">运营商</a>
-                <a href="/static/search/#">手机配件</a>
-                <a href="/static/search/#">手机服务</a>
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">operator |</a>
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">phone case |</a>
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">phone film |</a>
+                <a href="/static/search/#" style="font-style: italic;font-size: medium;color: brown">phone ornament</a>
             </div>
         </div>
-        <i><img src="/static/search/image/right-@1x.png" alt=""></i>
+        <!-- breadcrumbs-->
         <div class="JD_ipone_one c">
-            <a href="/static/search/#" class="qqq">手机 <img src="/static/search/image/down-@1x.png" alt=""></a>
-            <div>
-                <a href="/static/search/#">手机</a>
-                <a href="/static/search/#">老人机</a>
-                <a href="/static/search/#">对讲机</a>
-                <a href="/static/search/#">女性手机</a>
-                <a href="/static/search/#">超续航手机</a>
-                <a href="/static/search/#">全面屏手机</a>
-                <a href="/static/search/#">拍照手机</a>
-                <a href="/static/search/#">游戏手机</a>
-            </div>
+            <a th:href="${nav.link}" th:each="nav:${result.navs}">
+                <span th:text="${nav.navName}"> : </span>
+                <span th:text="${nav.navValue}"></span>×</a>
         </div>
-        <!-- 面包屑导航-->
-        <div class="JD_ipone_one c">
-            <a th:href="${nav.link}" th:each="nav:${result.navs}"><span th:text="${nav.navName}"> : </span><span th:text="${nav.navValue}"></span>×</a>
-        </div>
-        <i><img src="/static/search/image/right-@1x.png" alt=""></i>
     </div>
 </div>
 
-<!--商品筛选和排序-->
+<!--product filter-->
 <div class="JD_banner w">
     <div class="JD_nav">
         <div class="JD_selector">
-            <!--手机商品筛选-->
             <div class="title">
-                <h3><b>手机</b><em>商品筛选</em></h3>
-                <div class="st-ext">共&nbsp;<span>10135</span>个商品</div>
+                <h3><b>Phone |</b><em>Product Filter</em></h3>
+                <div class="st-ext">Total: <span>[[${result.total}]] </span>search results</div>
             </div>
-            <div class="JD_nav_logo">
-                <!--品牌-->
-                <div class="JD_nav_wrap">
+            <div class="JD_nav_logo" th:with="brandId = ${param.brandId}">
+                <!--Brand-->
+                <div th:if="${#strings.isEmpty(brandId)}" class="JD_nav_wrap">
                     <div class="sl_key">
-                        <span><b>品牌：</b></span>
+                        <span><b>Brand：</b></span>
                     </div>
                     <div class="sl_value">
                         <div class="sl_value_logo">
                             <ul>
                                 <li th:each="brand:${result.brands}">
                                     <a th:href="${'javascript:searchProducts(&quot;brandId&quot;,'+brand.brandId+')'}">
-                                        <img th:src="${brand.brandImg}" alt="">
+                                        <img th:src="${brand.brandImg}">
                                         <div th:text="${brand.brandName}">
                                         </div>
                                     </a>
@@ -815,10 +814,10 @@
                         </a>
                     </div>
                 </div>
-                <!--分类-->
+                <!--Category-->
                 <div class="JD_pre">
                     <div class="sl_key">
-                        <span><b>分类：</b></span>
+                        <span><b>Category：</b></span>
                     </div>
                     <div class="sl_value">
                         <ul>
@@ -843,8 +842,9 @@
                         </a>
                     </div>
                 </div>
-                <!--属性-->
-                <div class="JD_pre" th:each="attr:${result.attrs}">
+                <!--Attribute-->
+                <div class="JD_pre" th:each="attr:${result.attrs}"
+                     th:if="${!#lists.contains(result.attrIds,attr.attrId)}">
                     <div class="sl_key">
                         <span th:text="${attr.attrName}"></span>
                     </div>
@@ -860,8 +860,8 @@
             </div>
             <div class="JD_show">
                 <a href="/static/search/#">
-                    <span>
-                        更多选项（ CPU核数、网络、机身颜色 等）
+                    <span style="width: 400px">
+                        More options（ CPU Core、Network、color、etc）↓
                     </span>
                 </a>
             </div>
@@ -1042,32 +1042,55 @@
                     </div>
                 </div>
             </div>
-            <!--综合排序-->
+            <!--Sort-->
             <div class="JD_con_right">
                 <div class="filter">
-                    <!--综合排序-->
                     <div class="filter_top">
                         <div class="filter_top_left" th:with="p = ${param.sort}, price = ${param.skuPrice}">
+                            <!--HotScore : Condition 1 : default || Condition 2 : param.sort starts with 'hotScore'-->
                             <a th:class="${(!#strings.isEmpty(p) && #strings.startsWith(p,'hotScore') && #strings.endsWith(p,'desc')) ? 'sort_a desc':'sort_a' }"
                                th:attr="style=${(#strings.isEmpty(p) || #strings.startsWith(p,'hotScore')) ? 'color: #fff; border-color: #e4393c; background: #e4393c;':'color: #333; border-color: #ccc; background: #fff;'}"
-                               sort="hotScore" href="/static/search/#">综合排序[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'hotScore') && #strings.endsWith(p,'desc')) ? '↓' : '↑'}]]</a>
+                               sort="hotScore" href="/static/search/#">
+                                HotScore[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'hotScore') &&
+                                #strings.endsWith(p,'desc')) ? '↓' : (!#strings.isEmpty(p) &&
+                                !#strings.startsWith(p,'hotScore') ? '' : '↑' )}]]</a>
+                            <!--Sale : param.sort != null && param.sort starts with 'saleCount'-->
                             <a th:class="${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount') && #strings.endsWith(p,'desc')) ? 'sort_a desc':'sort_a' }"
                                th:attr="style=${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount')) ? 'color: #fff; border-color: #e4393c; background: #e4393c;':'color: #333; border-color: #ccc; background: #fff;'}"
-                               sort="saleCount" href="/static/search/#">销量[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount') && #strings.endsWith(p,'desc')) ? '↓' : '↑'}]]</a>
+                               sort="saleCount" href="/static/search/#">
+                                Sale[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount') &&
+                                #strings.endsWith(p,'desc')) ? '↓' : (#strings.isEmpty(p) ||
+                                !#strings.startsWith(p,'saleCount') ? '' : '↑' )}]]</a>
+                            <!--Price : param.sort != null && param.sort starts with 'skuPrice'-->
                             <a th:class="${(!#strings.isEmpty(p) &&  #strings.startsWith(p,'skuPrice') && #strings.endsWith(p,'desc')) ? 'sort_a desc':'sort_a' }"
                                th:attr="style=${(!#strings.isEmpty(p) && #strings.startsWith(p,'skuPrice')) ? 'color: #fff; border-color: #e4393c; background: #e4393c;':'color: #333; border-color: #ccc; background: #fff;'}"
-                               sort="skuPrice" href="/static/search/#">价格[[${(!#strings.isEmpty(p) &&  #strings.startsWith(p,'skuPrice') && #strings.endsWith(p,'desc')) ? '↓' : '↑'}]]</a>
-                            <a href="/static/search/#">评论分</a>
-                            <a href="/static/search/#">上架时间</a>
-                            <input id="skuPriceFrom" type="number" th:value="${#strings.isEmpty(price) ? '' : #strings.substringBefore(price,'_')}" style="width: 100px;margin-left: 30px"> -
-                            <input id="skuPriceTo" type="number" th:value="${#strings.isEmpty(price) ? '' : #strings.substringAfter(price,'_')}" style="width: 100px;"> <button id="skuPriceSearchButton">确定</button>
+                               sort="skuPrice" href="/static/search/#">
+                                Price[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'skuPrice') &&
+                                #strings.endsWith(p,'desc')) ? '↓' : (#strings.isEmpty(p) ||
+                                !#strings.startsWith(p,'skuPrice') ? '' : '↑' )}]]</a>
+                            <!--RemarkScore-->
+                            <a href="/static/search/#">Remark</a>
+                            <!--Time-->
+                            <a href="/static/search/#">Time</a>
+                            <!--substringBefore() : intercept the content before '_'
+                              substringAfter() : intercept the content after '_'-->
+                            <input id="skuPriceFrom" type="number"
+                                   th:value="${#strings.isEmpty(price) ? '' : #strings.substringBefore(price,'_')}"
+                                   style="width: 100px;margin-left: 30px"> -
+                            <input id="skuPriceTo" type="number"
+                                   th:value="${#strings.isEmpty(price) ? '' : #strings.substringAfter(price,'_')}"
+                                   style="width: 100px;">
+                            <button id="skuPriceSearchButton">Submit</button>
                         </div>
                         <div class="filter_top_right">
                             <span class="fp-text">
-                               <b>1</b><em>/</em><i>169</i>
+                               <b>[[${result.pageNum}]]</b><em>/</em><i>[[${result.pages}]]</i>
                            </span>
-                            <a href="/static/search/#" class="prev"><</a>
-                            <a href="/static/search/#" class="next"> > </a>
+                            <a class="page_to" style="color: #111111"
+                               th:attr="pn = ${result.pageNum > 1 ? result.pageNum - 1 : result.pageNum}"> [< </a> |
+                            <a class="page_to" style="color: #111111"
+                               th:attr="pn = ${result.pageNum < result.pages ? result.pageNum + 1 : result.pageNum}">
+                                >] </a>
                         </div>
                     </div>
                     <!--收货地址-->
@@ -1152,33 +1175,28 @@
                         <div class="filter_bottom_right">
                             <ul>
                                 <li>
-                                    <a href="/static/search/#">
+                                    <a href="/static/search/#" style="margin-left: 20px">
                                         <i></i>
-                                        谷粒商城配送
+                                        Self-operated delivery
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/static/search/#">
+                                    <a href="/static/search/#" style="margin-left: 20px">
                                         <i></i>
-                                        京尊达 </a>
-                                </li>
-                                <li>
-                                    <a href="/static/search/#">
-                                        <i></i>
-                                        货到付款
+                                        Cash on delivery
                                     </a>
                                 </li>
                                 <li>
                                     <a th:with="check=${param.hasStock}">
                                         <input id="showHasStock" type="checkbox"
                                                th:checked="${#strings.equals(check,'1')}">
-                                        仅显示有货
+                                        Only show in stock
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/static/search/#">
+                                    <a href="/static/search/#" style="margin-left: 20px">
                                         <i></i>
-                                        可配送全球
+                                        Available worldwide
                                     </a>
                                 </li>
                             </ul>
@@ -1202,10 +1220,9 @@
                                     <img th:src="${product.getSkuImg()}"></a></li>
                             </ul>
                             <p class="tab_R">
-                                <span th:text="'￥'+${product.getSkuPrice()}"></span>
+                                <span th:text="'￡'+${product.getSkuPrice()}"></span>
                             </p>
                             <p class="tab_JE">
-                                <!--uText不会转义标签信息-->
                                 <a href="/static/search/#" th:utext="${product.skuTitle}"></a>
                             </p>
                             <p class="tab_PI">已有<span>11万+</span>热门评价
@@ -1218,10 +1235,10 @@
                             </p>
                             <div class="tab_FO">
                                 <div class="FO_one">
-                                    <p>自营
+                                    <p>Self-Run
                                         <span>谷粒商城自营,品质保证</span>
                                     </p>
-                                    <p>满赠
+                                    <p>Money-Off
                                         <span>该商品参加满赠活动</span>
                                     </p>
                                 </div>
@@ -1230,28 +1247,29 @@
                     </div>
 
 
-                    <!--分页-->
+                    <!--Pagination-->
                     <div class="filter_page">
                         <div class="page_wrap">
                             <span class="page_span1">
                                 <a class="page_a" th:attr="pn=${result.pageNum - 1}"
-                                   th:if="${result.pageNum>1}">
-                                    < 上一页
+                                   th:if="${result.pageNum>1}" style="color: #111111">
+                                    Previous
                                 </a>
-                                <a class="page_a" th:attr="pn=${page},style=${page == result.pageNum ? 'border: 0;color:#ee2222;background: #fff':'' }"
+                                <a class="page_a"
+                                   th:attr="pn=${page},style=${page == result.pageNum ? 'border: 0;color:#ee2222;background: #fff':'' }"
                                    th:each="page:${result.pageNav}">
                                     [[${page}]]
                                 </a>
                                 <a class="page_a" th:attr="pn=${result.pageNum+1}"
                                    th:if="${result.pageNum<result.pages}">
-                                    下一页 >
+                                    Next
                                 </a>
                             </span>
                             <span class="page_span2">
-                                <em>共<b th:text="${result.pages}"></b>页&nbsp;&nbsp;到第</em>
+                                <em>Pages:<b th:text="${result.pages}"></b>&nbsp;&nbsp;to</em>
                                 <input type="number" value="1">
-                                <em>页</em>
-                                <a class="page_submit">确定</a>
+                                <em>Page</em>
+                                <a class="page_submit">Submit</a>
                             </span>
                         </div>
                     </div>
@@ -1915,10 +1933,10 @@
     $('.JD_show span').click(function () {
         if ($li.is(':hidden')) {
             $li.show();
-            $(this).css({width: "86px"}).text('收起 ^');
+            $(this).css({width: "86px"}).text('Fold ↑');
         } else {
             $li.hide();
-            $('.JD_show span').css({width: "291px"}).text('更多选项（ CPU核数、网络、机身颜色 等）');
+            $('.JD_show span').css({width: "400px"}).text('More options（ CPU Core、Network、color、etc）↓');
         }
         return false;
     });
@@ -2000,106 +2018,145 @@
         $(this).css("color", "#727272")
     });
 
-    //    根据商标图片进行跳转
+    //  page jump function
     function searchProducts(name, value) {
-        //原来的页面
-        location.href =  replaceAndAddParamVal(location.href,name,value,true);
+        // On the basis of the original url address, splicing new search conditions
+        location.href = replaceAndAddParamVal(location.href, name, value, true);
     }
 
-    //    根据keyword搜索商品
+    //  search products by keyword
     function searchByKeyword() {
+        // Get the content entered in the input box
         var value = $("#keyword_input").val();
         searchProducts("keyword", value);
     }
 
-    // 为页面跳转绑定事件
+    // Bind events for page jumps
     $(".page_a").click(function () {
+        // obtain pageNum;
         var page = $(this).attr("pn");
+        // obtain original URL Address;
         var loc = location.href;
-        if(loc.indexOf("?")!=-1){
-            if(loc.indexOf("pageNum")!=-1){
-                location.href = replaceAndAddParamVal(loc,"pageNum",page);
-            }else{
+        if (loc.indexOf("?") != -1) {
+            // If the original url address contains page information,replace the original page information
+            if (loc.indexOf("pageNum") != -1) {
+                location.href = replaceAndAddParamVal(loc, "pageNum", page);
+            } else {
+                // else add page jump information
                 location.href = location.href + "&pageNum=" + page;
             }
-        }else{
+        } else {
             location.href = location.href + "?pageNum=" + page;
         }
+        // Default behavior of disabling hyperlinks
         return false;
     })
 
+    $(".page_to").click(function () {
+        let page = $(this).attr("pn");
+        let oUrl = location.href;
+        location.href = replaceAndAddParamVal(oUrl, "pageNum", page);
+        return false;
+    })
+
+    // Bind stand-alone events for all sort fields
     $(".sort_a").click(function () {
         changeStyle(this);
-        // $(this).toggleClass("desc");
+        // obtain sort rule;
         var sort = $(this).attr("sort");
-        sort = $(this).hasClass("desc") ? sort+"_desc": sort + "_asc";
-        location.href = replaceAndAddParamVal(location.href,"sort",sort);
+        // if class has 'desc', sort should add '_desc';
+        sort = $(this).hasClass("desc") ? sort + "_desc" : sort + "_asc";
+        location.href = replaceAndAddParamVal(location.href, "sort", sort);
+        //  Disable default behavior
         return false;
-    //    禁用默认行为
     })
 
     function changeStyle(ele) {
-        //取消其余元素的样式；
-        $(".sort_a").css({"color":"#333","border-color":"#CCC","background":"#FFF"});
+        // cancel all elements' style
+        $(".sort_a").css({"color": "#333", "border-color": "#CCC", "background": "#FFF"});
         $(".sort_a").each(function () {
-            var text =  $(this).text().replace("↓","").replace("↑","");
+            var text = $(this).text().replace("↓", "").replace("↑", "");
             $(this).text(text);
-        })
-        //当前被点击的元素，变为被选中的状态
-        $(ele).css({"color":"#FFF","border-color":"#e4393c","background":"#e4393c"});
-        $(ele).toggleClass("desc");//默认为升序，加上为降序
-        if($(ele).hasClass("desc")){
-            var text =  $(ele).text().replace("↓","").replace("↑","");
+        });
+        // The currently clicked element becomes the selected state
+        $(ele).css({"color": "#FFF", "border-color": "#e4393c", "background": "#e4393c"});
+        // Alternately adding and removing 'desc'
+        $(ele).toggleClass("desc");
+        // if current ele has 'desc'
+        if ($(ele).hasClass("desc")) {
+            // delete original all arrow
+            var text = $(ele).text().replace("↓", "").replace("↑", "");
+            // desc => add '⬇'
             text = text + "↓";
             $(ele).text(text);
-        }else{
-            var text =  $(ele).text().replace("↓","").replace("↑","");
+        } else {
+            // delete original all arrow
+            var text = $(ele).text().replace("↓", "").replace("↑", "");
+            // asc => add '↑'
             text = text + "↑";
             $(ele).text(text);
         }
     }
 
-    // 进行页码的替换
-    function replaceAndAddParamVal(url,param,replaceVal,forceAdd) {
+    // Update URL address
+    function replaceAndAddParamVal(url, param, replaceVal, forceAdd) {
         var oUrl = url.toString();
         var nUrl;
-        if(oUrl.indexOf(param)!=-1) {
-            if(forceAdd){
-                if(oUrl.indexOf("?") != -1){
+        // There is a corresponding attribute value in the url address,so execute replace operation;
+        // param + "=" can avoid inaccurately judge whether url address carry param condition;
+        if (oUrl.indexOf(param + "=") != -1) {
+            // forceAdd = true => don't replace, force add condition after url address;
+            if (forceAdd) {
+                // judge  whether original url address contains '?'
+                if (oUrl.indexOf("?") != -1) {
                     nUrl = oUrl + "&" + param + "=" + replaceVal;
-                }else{
+                } else {
                     nUrl = oUrl + "?" + param + "=" + replaceVal;
                 }
-            }else{
+            } else {
                 var re = eval('/(' + param + '=)([^&]*)/gi');
                 nUrl = oUrl.replace(re, param + '=' + replaceVal);
             }
-        }else{
-            if(oUrl.indexOf("?") != -1){
+        } else {
+            // There is no corresponding attribute value in the url address,so execute add operation;
+            // next, judge  whether original url address contains '?'
+            if (oUrl.indexOf("?") != -1) {
                 nUrl = oUrl + "&" + param + "=" + replaceVal;
-            }else{
+            } else {
                 nUrl = oUrl + "?" + param + "=" + replaceVal;
             }
         }
+        // return new url address;
         return nUrl;
     }
 
+    // Bind stand-alone events for price ranges
     $("#skuPriceSearchButton").click(function () {
+        // acquire input box value according to Id；
         let from = $("#skuPriceFrom").val();
         let to = $("#skuPriceTo").val();
         let query = from + "_" + to;
-        location.href =  replaceAndAddParamVal(location.href,"skuPrice",query);
+        // splice price range for url address
+        location.href = replaceAndAddParamVal(location.href, "skuPrice", query);
     })
 
+    // Listen to the change of the state of the selection box
     $("#showHasStock").change(function () {
-        if($(this).prop("checked")){
-            location.href =  replaceAndAddParamVal(location.href,"hasStock",1);
-        }else{
+        //  prop() : obtain the value of a property
+        if ($(this).prop("checked")) {
+            // true - checked => Show items that are in stock
+            location.href = replaceAndAddParamVal(location.href, "hasStock", 1);
+        } else {
+            // false => cancel filter condition about stock
             var re = eval('/(hasStock=)([^&]*)/gi');
+            // use "" replace "hasStock=1"
             location.href = (location.href + "").replace(re, '');
         }
+        // Default behavior of disabling hyperlinks
         return false;
     })
+
+
 </script>
 </body>
 </html>

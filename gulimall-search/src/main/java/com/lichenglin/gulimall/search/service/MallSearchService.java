@@ -4,9 +4,8 @@ import com.lichenglin.gulimall.search.vo.SearchParam;
 import com.lichenglin.gulimall.search.vo.SearchReturn;
 
 public interface MallSearchService {
-
     /*
-    根据检索参数，返回检索结果；
-     */
+        MallSearchService interface define method to receive search condition and return query data;
+    */
     SearchReturn search(SearchParam searchParam);
 }

@@ -5,27 +5,27 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 封装页面所有可能传来的条件
+ * customized VO(value object) encapsulates all possible retrieval parameters
  */
 @Data
 public class SearchParam {
-    //全文匹配的关键字
+    // Keywords queried in page navigation bar
     private String keyword;
-    //三级分类ID
+    // Three-level classification ID
     private Long catalog3Id;
-    //排序条件：saleCount_asc/saleCount_desc ; skuPrice_asc/skuPrice_desc ; hotScore_asc/hotScore_desc ;
+    // Sort condition：saleCount_asc/saleCount_desc ; skuPrice_asc/skuPrice_desc ; hotScore_asc/hotScore_desc ;
     private String sort;
-    //过滤条件
+    // Stock information  0 - out of stock ; 1 - in stock
     private Integer hasStock;
-    //价格区间
+    // Price range  XX_XX | XX_ | _XX
     private String skuPrice;
-    //品牌ID,支持多选；
+    // BrandId, support multiple selection
     private List<Long> brandId;
-    //按照属性进行过滤筛选
-    //EXAMPLE: attrs=1_安卓：IOS & attrs=2_8G:16G
+    // filter by product's attributes
+    // EXAMPLE: attrs = 1_android:IOS & attrs=2_8G:16G
     private List<String> attrs;
-    //分页
+    // pagination
     private Integer pageNum = 1;
-
-    private String _queryString;//原生查询条件
+    // query condition
+    private String _queryString;
 }

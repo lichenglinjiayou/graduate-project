@@ -8,7 +8,11 @@ import java.util.List;
 
 @FeignClient("gulimall-product")
 public interface ProductFeignService {
-
+    /**
+     * Query attribute name by attribute ID;
+     * @param attrId
+     * @return
+     */
     @GetMapping("/product/attr/info/{attrId}")
     public R attrInfo(@PathVariable("attrId") Long attrId);
 

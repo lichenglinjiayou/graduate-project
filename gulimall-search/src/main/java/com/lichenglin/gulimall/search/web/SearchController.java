@@ -17,6 +17,12 @@ public class SearchController {
     @Autowired
     MallSearchService mallSearchService;
 
+    /**
+     * @param searchParam encapsulate all search parameter
+     * @param model save all query result for rendering to front-end page
+     * @param request obtain all query conditions
+     * @return
+     */
     @RequestMapping("/list.html")
     public String listPage(SearchParam searchParam, Model model, HttpServletRequest request){
         String queryString = request.getQueryString();

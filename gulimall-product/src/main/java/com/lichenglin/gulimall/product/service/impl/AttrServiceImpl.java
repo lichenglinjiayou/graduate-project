@@ -115,7 +115,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     @Override
-    @Cacheable(value = "attrId",key = "#attrId")
+    @Cacheable(value = "attr",key = "'attrInfo:'+#root.args[0]")
     public AttrResponseWithPath getAllPathById(Long attrId) {
         AttrEntity attrEntity = this.getById(attrId);
         AttrResponseWithPath attrResponseWithPath = new AttrResponseWithPath();

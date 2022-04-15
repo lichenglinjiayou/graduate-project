@@ -7,25 +7,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 返回页面的信息
+ * Encapsulation of query result information
  */
 @Data
 public class SearchReturn {
-    private List<SkuEsModel> products; //ES检索出来的商品信息
-    private Integer pageNum; //当前页码
-    private Integer pages; //总页码
+    private List<SkuEsModel> products; // products' information from ElasticSearch
+    private Integer pageNum; // current page
+    private Integer pages; // total page
     private List<Integer> pageNav;
-    private Long total; //总记录数
-    private List<BrandVo> brands; //当前查询结果，所有涉及的品牌
-    private List<AttrVo> attrs; //当前查询结果，所涉及的属性
-    private List<CatalogVo> catalogs; //当前查询结果，所涉及的所有分类
-    private List<NavVo> navs = new ArrayList<>(); //面包屑导航
+    private Long total; // total records
+    private List<BrandVo> brands; // All brands involved in the current query result
+    private List<AttrVo> attrs; // All attributes involved in the current query products
+    private List<CatalogVo> catalogs; // All catalogs involved in the current query result
+    private List<NavVo> navs = new ArrayList<>(); // Breadcrumbs
+    private List<Long> attrIds = new ArrayList<>(); // record all unselected attributes
 
     @Data
     public static class NavVo{
-        private String navName;
-        private String navValue;
-        private String link;
+        private String navName; // navigation name; such as: brand;
+        private String navValue; // navigation value; such as: sumsang, apple;
+        private String link; // navigation url address;
     }
 
     @Data
