@@ -26,7 +26,7 @@ spring:
     host: 192.168.127.138
     port: 6379
 server:
-  port: 15001
+  port: 15000
 management:
   endpoints:
     web:
