@@ -25,8 +25,8 @@ server:
   port: 13000
 alibaba:
   cloud:
-    access-key: LTAI5tGariZtMGB9M8TF76sB
-    secret-key: qHg0xapbwMot7lYPGpWqAg4atvTnkc
+    access-key: xxxxxxxxxxxx
+    secret-key: xxxxxxxxxxxxxxxxxxxx
     oss:
       endpoint: oss-eu-west-1.aliyuncs.com
       bucket: gulimall-lichenglin
